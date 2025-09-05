@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal BCP Test</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Minimal Navigation Test</h1>
+        </header>
+
+        <main class="main-content">
+            <div class="navigation-panel">
+                <h2>Lines of Business</h2>
+                <div class="business-lines">
+                    <button class="business-line-btn" data-line="ce">CE Global</button>
+                </div>
+            </div>
+
+            <div class="content-panel">
+                <!-- Section Details -->
+                <div class="section-details hidden" id="section-content">
+                    <div class="section-header">
+                        <h2 id="section-title">Section Details</h2>
+                        <button class="back-btn" id="section-back-btn">← Back to Plan</button>
+                    </div>
+                    <div class="section-body" id="section-body">
+                        Section content here
+                    </div>
+                </div>
+
+                <!-- Welcome Message -->
+                <div class="welcome-message" id="welcome">
+                    <h2>Business Continuity Plans</h2>
+                    <p>Select a line of business from the left panel.</p>
+                </div>
+
+                <!-- BCP Table of Contents -->
+                <div class="bcp-details hidden" id="bcp-content">
+                    <div class="bcp-header">
+                        <h2 id="bcp-title">Business Continuity Plan</h2>
+                        <button class="back-btn" id="back-btn">← Back to Dashboard</button>
+                    </div>
+                    
+                    <div class="bcp-toc">
+                        <h3>Table of Contents</h3>
+                        <div class="toc-container" id="toc-container">
+                            <div class="toc-level-1" data-section="test">Test Section (click me)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        console.log('Script started');
+        
+        // Simple navigation object
+        const nav = {
+            currentLine: null,
+            
+            showWelcome() {
+                console.log('Showing welcome screen');
+                document.getElementById('welcome').classList.remove('hidden');
+                document.getElementById('bcp-content').classList.add('hidden');
+                document.getElementById('section-content').classList.add('hidden');
+                this.currentLine = null;
+            },
+            
+            showBCP(line) {
+                console.log('Showing BCP for:', line);
+                this.currentLine = line;
+                document.getElementById('welcome').classList.add('hidden');
+                document.getElementById('bcp-content').classList.remove('hidden');
+                document.getElementById('section-content').classList.add('hidden');
+                document.getElementById('bcp-title').textContent = `${line.toUpperCase()} Business Continuity Plan`;
+            },
+            
+            showSection(section) {
+                console.log('Showing section:', section);
+                document.getElementById('welcome').classList.add('hidden');
+                document.getElementById('bcp-content').classList.add('hidden');
+                document.getElementById('section-content').classList.remove('hidden');
+                document.getElementById('section-title').textContent = section;
+            }
+        };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, setting up navigation...');
+            
+            // Business line button
+            const ceBtn = document.querySelector('[data-line="ce"]');
+            if (ceBtn) {
+                console.log('CE button found, adding listener');
+                ceBtn.addEventListener('click', function() {
+                    console.log('CE button clicked');
+                    nav.showBCP('ce');
+                });
+            } else {
+                console.error('CE button not found!');
+            }
+            
+            // Back to dashboard button
+            const backBtn = document.getElementById('back-btn');
+            if (backBtn) {
+                console.log('Back button found, adding listener');
+                backBtn.addEventListener('click', function() {
+                    console.log('Back to dashboard clicked');
+                    nav.showWelcome();
+                });
+            } else {
+                console.error('Back button not found!');
+            }
+            
+            // Back to plan button
+            const sectionBackBtn = document.getElementById('section-back-btn');
+            if (sectionBackBtn) {
+                console.log('Section back button found, adding listener');
+                sectionBackBtn.addEventListener('click', function() {
+                    console.log('Back to plan clicked, currentLine:', nav.currentLine);
+                    if (nav.currentLine) {
+                        nav.showBCP(nav.currentLine);
+                    } else {
+                        nav.showWelcome();
+                    }
+                });
+            } else {
+                console.error('Section back button not found!');
+            }
+            
+            // Test section
+            const testSection = document.querySelector('[data-section="test"]');
+            if (testSection) {
+                console.log('Test section found, adding listener');
+                testSection.addEventListener('click', function() {
+                    console.log('Test section clicked');
+                    nav.showSection('Test Section');
+                });
+            } else {
+                console.error('Test section not found!');
+            }
+            
+            console.log('Navigation setup complete');
+        });
+    </script>
+</body>
+</html>

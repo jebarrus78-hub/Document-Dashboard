@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCP Data Tracker - Simple Nav Test</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Business Continuity Plans</h1>
+            <p class="subtitle">Quick Reference Dashboard - Simple Nav Test</p>
+        </header>
+
+        <main class="main-content">
+            <div class="navigation-panel">
+                <h2>Lines of Business</h2>
+                <div class="business-lines">
+                    <button class="business-line-btn" data-line="ce">
+                        CE Global
+                    </button>
+                    <button class="business-line-btn" data-line="cms">
+                        CMS Global
+                    </button>
+                    <button class="business-line-btn" data-line="cx-labs">
+                        CX Labs Global
+                    </button>
+                    <button class="business-line-btn" data-line="lsc">
+                        Global LSC
+                    </button>
+                    <button class="business-line-btn" data-line="proactive">
+                        Proactive Services
+                    </button>
+                    <button class="business-line-btn" data-line="sourced">
+                        Sourced Services Global
+                    </button>
+                    <button class="business-line-btn" data-line="tac">
+                        TAC Global (Legacy)
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-panel">
+                <!-- Section Details - At Top -->
+                <div class="section-details hidden" id="section-content">
+                    <div class="section-header">
+                        <h2 id="section-title">Section Details</h2>
+                        <button class="back-btn" id="section-back-btn">← Back to Plan</button>
+                    </div>
+                    <div class="section-body" id="section-body">
+                        <!-- Section content will be loaded here -->
+                        <p>This is test section content.</p>
+                    </div>
+                </div>
+
+                <!-- Welcome Message -->
+                <div class="welcome-message" id="welcome">
+                    <h2>Business Continuity Plans</h2>
+                    <p>Select a line of business from the left panel to view its Business Continuity Plan details.</p>
+                </div>
+
+                <!-- BCP Table of Contents -->
+                <div class="bcp-details hidden" id="bcp-content">
+                    <div class="bcp-header">
+                        <h2 id="bcp-title">Business Continuity Plan</h2>
+                        <button class="back-btn" id="back-btn">← Back to Dashboard</button>
+                    </div>
+                    
+                    <div class="bcp-toc">
+                        <h3>Table of Contents</h3>
+                        <div class="toc-container" id="toc-container">
+                            <!-- Dynamic TOC will be loaded here -->
+                            <div class="toc-level-1" onclick="showTestSection()" style="cursor: pointer; padding: 10px; border: 1px solid #ddd; margin: 5px;">
+                                Test Section (Click me)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function showTestSection() {
+            console.log('Test section clicked via onclick');
+            const sectionContent = document.getElementById('section-content');
+            const bcpContent = document.getElementById('bcp-content');
+            const welcome = document.getElementById('welcome');
+            
+            if (welcome) welcome.classList.add('hidden');
+            if (bcpContent) bcpContent.classList.add('hidden');
+            if (sectionContent) sectionContent.classList.remove('hidden');
+        }
+    </script>
+    <script src="simple-nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BCP Data Test</title>
+</head>
+<body>
+    <h1>BCP Data Loading Test</h1>
+    <div id="result"></div>
+    
+    <script>
+        async function testDataLoading() {
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                console.log('Attempting to load bcp-data-final.json...');
+                const response = await fetch('bcp-data-final.json');
+                console.log('Response status:', response.status);
+                console.log('Response OK:', response.ok);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Data loaded successfully:', data);
+                
+                resultDiv.innerHTML = `
+                    <h2>✅ Success!</h2>
+                    <p>Data loaded successfully</p>
+                    <p>Plans found: ${Object.keys(data.bcpPlans).length}</p>
+                    <pre>${JSON.stringify(Object.keys(data.bcpPlans), null, 2)}</pre>
+                `;
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                resultDiv.innerHTML = `
+                    <h2>❌ Error</h2>
+                    <p>Error: ${error.message}</p>
+                    <p>Check browser console for details</p>
+                `;
+            }
+        }
+        
+        // Run test when page loads
+        window.addEventListener('load', testDataLoading);
+    </script>
+</body>
+</html>

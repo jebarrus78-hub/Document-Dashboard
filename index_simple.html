@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCP Data Tracker - Simple</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Fallback styles in case CSS doesn't load */
+        .fallback-notice {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .loading-message {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading message that will be replaced -->
+    <div id="loading-message" class="loading-message">
+        <h2>🔄 Loading BCP Data Tracker...</h2>
+        <p>Please wait while the application initializes.</p>
+    </div>
+    
+    <!-- Fallback notice in case JavaScript fails -->
+    <div id="fallback-notice" class="fallback-notice" style="display: none;">
+        <h2>⚠️ Application Loading Issue</h2>
+        <p>The BCP Data Tracker is having trouble loading. This could be due to:</p>
+        <ul style="text-align: left; display: inline-block;">
+            <li>Missing or corrupted data files</li>
+            <li>JavaScript execution errors</li>
+            <li>Browser compatibility issues</li>
+        </ul>
+        <p><strong>Try:</strong></p>
+        <ol style="text-align: left; display: inline-block;">
+            <li>Refreshing the page (Ctrl+F5 or Cmd+Shift+R)</li>
+            <li>Checking the browser console for errors</li>
+            <li>Opening the diagnostic page: <a href="diagnostic.html">diagnostic.html</a></li>
+        </ol>
+    </div>
+
+    <div class="app-container" style="display: none;" id="main-app">
+        <header class="app-header">
+            <h1>Business Continuity Plans</h1>
+            <p class="subtitle">Quick Reference Dashboard</p>
+        </header>
+
+        <main class="main-content">
+            <div class="navigation-panel">
+                <h2>Lines of Business</h2>
+                <div class="business-lines">
+                    <button class="business-line-btn" data-line="ce">
+                        CE Global
+                    </button>
+                    <button class="business-line-btn" data-line="cms">
+                        CMS Global
+                    </button>
+                    <button class="business-line-btn" data-line="cx-labs">
+                        CX Labs Global
+                    </button>
+                    <button class="business-line-btn" data-line="lsc">
+                        Global LSC
+                    </button>
+                    <button class="business-line-btn" data-line="proactive">
+                        Proactive Services
+                    </button>
+                    <button class="business-line-btn" data-line="sourced">
+                        Sourced Services Global
+                    </button>
+                    <button class="business-line-btn" data-line="tac">
+                        TAC Global (Legacy)
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-panel">
+                <!-- Section Details - At Top -->
+                <div class="section-details hidden" id="section-content">
+                    <div class="section-header">
+                        <h2 id="section-title">Section Details</h2>
+                        <button class="back-btn" id="section-back-btn">← Back to Plan</button>
+                    </div>
+                    <div id="section-content-area">
+                        <!-- Section content will be displayed here -->
+                    </div>
+                </div>
+
+                <!-- Plan Details - In Middle -->
+                <div class="plan-details hidden" id="plan-content">
+                    <div class="plan-header">
+                        <h2 id="plan-title">Business Line Details</h2>
+                        <button class="back-btn" id="plan-back-btn">← Back to Dashboard</button>
+                    </div>
+                    <div class="quick-actions">
+                        <h3>Quick Actions</h3>
+                        <div class="quick-actions-grid">
+                            <button class="quick-action-btn" onclick="window.bcpTracker?.navigateToBFT()">
+                                📋 BFT Contacts ⭐
+                            </button>
+                            <button class="quick-action-btn" onclick="window.bcpTracker?.showAllBFTSections()">
+                                👥 All BFT Sections
+                            </button>
+                            <button class="quick-action-btn" onclick="window.bcpTracker?.searchForSection('emergency contacts')">
+                                📞 Emergency Contacts
+                            </button>
+                            <button class="quick-action-btn" onclick="window.bcpTracker?.searchForSection('recovery procedures')">
+                                🔄 Recovery Procedures
+                            </button>
+                        </div>
+                    </div>
+                    <div id="plan-content-area">
+                        <!-- Plan content will be displayed here -->
+                    </div>
+                </div>
+
+                <!-- Welcome Screen - At Bottom -->
+                <div class="welcome-screen" id="welcome-screen">
+                    <div class="welcome-content">
+                        <h2>Welcome to BCP Data Tracker</h2>
+                        <p>Select a line of business from the left panel to view its Business Continuity Plan details.</p>
+                        
+                        <div class="dashboard-stats" id="dashboard-stats">
+                            <!-- Stats will be populated by JavaScript -->
+                        </div>
+
+                        <div class="quick-search">
+                            <h3>🔍 Quick Search</h3>
+                            <div class="search-controls">
+                                <input type="text" id="search-input" placeholder="Search plans, contacts, procedures..." />
+                                <select id="section-filter">
+                                    <option value="">All Sections</option>
+                                    <option value="emergency_contacts">Emergency Contacts</option>
+                                    <option value="recovery_teams">Recovery Teams (BFT/CFT)</option>
+                                    <option value="procedures">Procedures</option>
+                                    <option value="communications">Communications</option>
+                                    <option value="resources">Resources</option>
+                                </select>
+                                <button id="search-btn">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="search-results hidden" id="search-results">
+            <div class="search-results-header">
+                <h3 id="search-results-title">Search Results</h3>
+                <button class="back-btn" id="search-back-btn">← Back to Dashboard</button>
+            </div>
+            <div id="search-results-content">
+                <!-- Search results will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show loading status
+        let loadingSteps = 0;
+        const totalSteps = 3;
+        
+        function updateLoadingStatus(step, message) {
+            const loadingDiv = document.getElementById('loading-message');
+            if (loadingDiv) {
+                loadingSteps++;
+                loadingDiv.innerHTML = `
+                    <h2>🔄 Loading BCP Data Tracker... (${loadingSteps}/${totalSteps})</h2>
+                    <p>${message}</p>
+                `;
+            }
+        }
+        
+        function showApp() {
+            document.getElementById('loading-message').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+        }
+        
+        function showFallback() {
+            document.getElementById('loading-message').style.display = 'none';
+            document.getElementById('fallback-notice').style.display = 'block';
+        }
+        
+        // Set timeout to show fallback if app doesn't load in 10 seconds
+        setTimeout(() => {
+            if (document.getElementById('loading-message').style.display !== 'none') {
+                showFallback();
+            }
+        }, 10000);
+        
+        updateLoadingStatus(1, 'Loading JavaScript...');
+    </script>
+    
+    <script src="script-toc.js"></script>
+    
+    <script>
+        updateLoadingStatus(2, 'Initializing application...');
+        
+        // Override the tracker initialization to provide better feedback
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLoadingStatus(3, 'Loading BCP data...');
+            
+            try {
+                window.bcpTracker = new BCPTrackerTOC();
+                
+                // Monitor when the app is ready
+                const checkReady = setInterval(() => {
+                    if (window.bcpTracker && window.bcpTracker.bcpData) {
+                        clearInterval(checkReady);
+                        showApp();
+                    }
+                }, 100);
+                
+                // Fallback if not ready in 5 seconds
+                setTimeout(() => {
+                    clearInterval(checkReady);
+                    if (!window.bcpTracker || !window.bcpTracker.bcpData) {
+                        showFallback();
+                    }
+                }, 5000);
+                
+            } catch (error) {
+                console.error('Error initializing BCP Tracker:', error);
+                showFallback();
+            }
+        });
+    </script>
+</body>
+</html>

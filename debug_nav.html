@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCP Navigation Debug</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Navigation Debug Test</h1>
+        </header>
+
+        <main class="main-content">
+            <div class="navigation-panel">
+                <h2>Lines of Business</h2>
+                <div class="business-lines">
+                    <button class="business-line-btn" data-line="ce">CE Global</button>
+                </div>
+            </div>
+
+            <div class="content-panel">
+                <!-- Section Details -->
+                <div class="section-details hidden" id="section-content">
+                    <div class="section-header">
+                        <h2 id="section-title">Section Details</h2>
+                        <button class="back-btn" id="section-back-btn">← Back to Plan</button>
+                    </div>
+                    <div class="section-body" id="section-body">
+                        Test section content
+                    </div>
+                </div>
+
+                <!-- Welcome Message -->
+                <div class="welcome-message" id="welcome">
+                    <h2>Business Continuity Plans</h2>
+                    <p>Select a line of business to test navigation.</p>
+                </div>
+
+                <!-- BCP Table of Contents -->
+                <div class="bcp-details hidden" id="bcp-content">
+                    <div class="bcp-header">
+                        <h2 id="bcp-title">Business Continuity Plan</h2>
+                        <button class="back-btn" id="back-btn">← Back to Dashboard</button>
+                    </div>
+                    
+                    <div class="bcp-toc">
+                        <h3>Table of Contents</h3>
+                        <div class="toc-container" id="toc-container">
+                            <div class="toc-level-1" data-section="test">Test Section</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded');
+            
+            // Check if elements exist
+            const backBtn = document.getElementById('back-btn');
+            const sectionBackBtn = document.getElementById('section-back-btn');
+            const ceBtn = document.querySelector('[data-line="ce"]');
+            
+            console.log('back-btn exists:', !!backBtn);
+            console.log('section-back-btn exists:', !!sectionBackBtn);
+            console.log('ce button exists:', !!ceBtn);
+            
+            // Add test listeners
+            if (backBtn) {
+                backBtn.addEventListener('click', () => {
+                    console.log('Back to dashboard clicked!');
+                    alert('Back to dashboard works!');
+                });
+            }
+            
+            if (sectionBackBtn) {
+                sectionBackBtn.addEventListener('click', () => {
+                    console.log('Back to plan clicked!');
+                    alert('Back to plan works!');
+                });
+            }
+            
+            if (ceBtn) {
+                ceBtn.addEventListener('click', () => {
+                    console.log('CE button clicked!');
+                    document.getElementById('welcome').classList.add('hidden');
+                    document.getElementById('bcp-content').classList.remove('hidden');
+                });
+            }
+            
+            // Add test section click
+            document.querySelector('[data-section="test"]').addEventListener('click', () => {
+                console.log('Test section clicked!');
+                document.getElementById('bcp-content').classList.add('hidden');
+                document.getElementById('section-content').classList.remove('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

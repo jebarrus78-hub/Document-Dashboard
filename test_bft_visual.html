@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BFT Table Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-results {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 BFT Table Visual Test</h1>
+    
+    <div class="test-section">
+        <h2>Test Results</h2>
+        <div id="test-results" class="test-results">
+            <p>Loading...</p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Sample BFT Table (CE Business Line)</h2>
+        <div id="bft-display"></div>
+    </div>
+    
+    <script src="script-toc.js"></script>
+    <script>
+        async function testBFTDisplay() {
+            const results = document.getElementById('test-results');
+            const bftDisplay = document.getElementById('bft-display');
+            
+            try {
+                // Load the BCP data
+                const response = await fetch('bcp-data-final.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                // Test the CE business line (first one with BFT data)
+                const cePlan = data.bcpPlans.ce;
+                if (!cePlan) {
+                    throw new Error('CE plan not found');
+                }
+                
+                // Find the BFT section
+                const sections = cePlan.sections;
+                let bftSection = null;
+                
+                for (const [sectionId, section] of Object.entries(sections)) {
+                    if (sectionId.includes('business_function_team')) {
+                        bftSection = section;
+                        break;
+                    }
+                }
+                
+                if (!bftSection) {
+                    throw new Error('BFT section not found');
+                }
+                
+                // Find the contacts
+                const content = bftSection.content;
+                let contactsItem = null;
+                
+                for (const item of content) {
+                    if (item.type === 'contacts' && item.title === 'Business Function Team Members') {
+                        contactsItem = item;
+                        break;
+                    }
+                }
+                
+                if (!contactsItem) {
+                    throw new Error('Contacts item not found');
+                }
+                
+                // Create tracker instance and format the table
+                const tracker = new BCPTrackerTOC();
+                const tableHtml = tracker.formatBFTTable(contactsItem.content);
+                
+                // Display results
+                results.innerHTML = `
+                    <p>✅ Data loaded successfully</p>
+                    <p>✅ BFT section found</p>
+                    <p>✅ Contacts found: ${contactsItem.content.length} members</p>
+                    <p>✅ Table formatted successfully</p>
+                `;
+                
+                bftDisplay.innerHTML = tableHtml;
+                
+            } catch (error) {
+                results.innerHTML = `
+                    <p>❌ Error: ${error.message}</p>
+                    <p>Check the browser console for more details.</p>
+                `;
+                console.error('BFT Test Error:', error);
+            }
+        }
+        
+        // Run the test when the page loads
+        document.addEventListener('DOMContentLoaded', testBFTDisplay);
+    </script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCP Data Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Business Continuity Plans</h1>
+            <p class="subtitle">Quick Reference Dashboard</p>
+        </header>
+
+        <main class="main-content">
+            <div class="navigation-panel">
+                <h2>Lines of Business</h2>
+                <div class="business-lines">
+                    <button class="business-line-btn" data-line="ce">
+                        CE Global
+                    </button>
+                    <button class="business-line-btn" data-line="cms">
+                        CMS Global
+                    </button>
+                    <button class="business-line-btn" data-line="cx-labs">
+                        CX Labs Global
+                    </button>
+                    <button class="business-line-btn" data-line="lsc">
+                        Global LSC
+                    </button>
+                    <button class="business-line-btn" data-line="proactive">
+                        Proactive Services
+                    </button>
+                    <button class="business-line-btn" data-line="sourced">
+                        Sourced Services Global
+                    </button>
+                    <button class="business-line-btn" data-line="tac">
+                        TAC Global (Legacy)
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-panel">
+                <!-- Section Details - At Top -->
+                <div class="section-details hidden" id="section-content">
+                    <div class="section-header">
+                        <h2 id="section-title">Section Details</h2>
+                        <button class="back-btn" id="section-back-btn">← Back to Plan</button>
+                    </div>
+                    <div class="section-body" id="section-body">
+                        <!-- Section content will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Welcome Message -->
+                <div class="welcome-message" id="welcome">
+                    <h2>Business Continuity Plans</h2>
+                    <p>Select a line of business from the left panel to view its Business Continuity Plan details.</p>
+                </div>
+
+                <!-- BCP Table of Contents -->
+                <div class="bcp-details hidden" id="bcp-content">
+                    <div class="bcp-header">
+                        <h2 id="bcp-title">Business Continuity Plan</h2>
+                        <button class="back-btn" id="back-btn">← Back to Dashboard</button>
+                    </div>
+                    
+                    <div class="bcp-toc">
+                        <h3>Table of Contents</h3>
+                        <div class="toc-container" id="toc-container">
+                            <!-- Dynamic TOC will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Panel -->
+                <div class="quick-actions" id="quick-actions">
+                    <h3>Quick Access</h3>
+                    <div class="quick-action-buttons">
+                        <button class="quick-action-btn" onclick="window.bcpTracker?.navigateToBFT()">
+                            📋 BFT Contacts ⭐
+                        </button>
+                        <button class="quick-action-btn" onclick="window.bcpTracker?.showAllBFTSections()">
+                            👥 All BFT Sections
+                        </button>
+                        <button class="quick-action-btn" onclick="window.bcpTracker?.searchForSection('recovery strategies')">
+                            ⚡ Recovery Strategies
+                        </button>
+                        <button class="quick-action-btn" onclick="window.bcpTracker?.searchForSection('activation')">
+                            🚨 Activation Guides
+                        </button>
+                        <button class="quick-action-btn" onclick="window.bcpTracker?.searchForSection('crisis communication')">
+                            📢 Crisis Communication
+                        </button>
+                        <button class="quick-action-btn" onclick="window.bcpTracker?.searchForSection('dependencies')">
+                            🔗 Dependencies
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="search-container">
+            <div class="search-filters">
+                <select id="business-line-filter">
+                    <option value="">All Business Lines</option>
+                    <option value="ce">CE Global</option>
+                    <option value="cms">CMS Global</option>
+                    <option value="cx-tac">CX Business Continuity (TAC) ⭐</option>
+                    <option value="cx-labs">CX Labs Global</option>
+                    <option value="lsc">Global LSC</option>
+                    <option value="proactive">Proactive Services</option>
+                    <option value="sourced">Sourced Services Global</option>
+                    <option value="tac">TAC Global (Legacy)</option>
+                </select>
+                <select id="section-filter">
+                    <option value="">All Sections</option>
+                    <option value="introduction">Introduction & Objectives</option>
+                    <option value="activation">Activation & Engagement</option>
+                    <option value="recovery_teams">Recovery Teams (BFT/CFT)</option>
+                    <option value="procedures">Recovery Procedures</option>
+                    <option value="recovery_strategies">Recovery Strategies</option>
+                    <option value="dependencies">Dependencies</option>
+                    <option value="personnel">Personnel Requirements</option>
+                    <option value="scenarios">Recovery Scenarios</option>
+                    <option value="directory">Contact Directory</option>
+                    <option value="communication">Crisis Communication</option>
+                    <option value="technology">Technology & Tools</option>
+                    <option value="building">Building & Facilities</option>
+                    <option value="vendor">Vendor & Supplier Info</option>
+                </select>
+            </div>
+            <div class="search-input-container">
+                <input type="text" id="search-input" placeholder="Search across all BCPs...">
+                <button id="search-btn">Search</button>
+                <button id="clear-search-btn" class="clear-btn">Clear</button>
+            </div>
+        </div>
+
+        <div class="search-results hidden" id="search-results">
+            <div class="search-results-header">
+                <h3 id="search-results-title">Search Results</h3>
+                <button class="back-btn" id="search-back-btn">← Back to Dashboard</button>
+            </div>
+            <div id="search-results-content">
+                <!-- Search results will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="simple-nav.js"></script>
+    <script>
+        // Add test section navigation
+        function addTestSectionClick() {
+            const tocContainer = document.getElementById('toc-container');
+            if (tocContainer) {
+                tocContainer.innerHTML = `
+                    <div class="toc-level-1" onclick="showTestSection()" style="cursor: pointer; padding: 10px; border: 1px solid #ddd; margin: 5px;">
+                        Test Section (Click me to test section navigation)
+                    </div>
+                `;
+            }
+        }
+        
+        function showTestSection() {
+            console.log('Test section clicked');
+            const sectionContent = document.getElementById('section-content');
+            const bcpContent = document.getElementById('bcp-content');
+            const welcome = document.getElementById('welcome');
+            
+            if (welcome) welcome.classList.add('hidden');
+            if (bcpContent) bcpContent.classList.add('hidden');
+            if (sectionContent) sectionContent.classList.remove('hidden');
+            
+            document.getElementById('section-title').textContent = 'Test Section';
+            document.getElementById('section-body').innerHTML = '<p>This is a test section to verify navigation works.</p>';
+        }
+        
+        // Add the test section when a business line is clicked
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.business-line-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    setTimeout(addTestSectionClick, 100);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

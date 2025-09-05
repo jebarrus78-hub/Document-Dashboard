@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCP Direct Test</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>BCP Direct Test</h1>
+            <p class="subtitle">Testing Direct Navigation to CX-TAC BFT</p>
+        </header>
+
+        <main class="main-content">
+            <div class="content-panel">
+                <button id="test-cx-tac-bft" style="padding: 10px 20px; background: #007acc; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 20px;">
+                    Test CX-TAC BFT Section
+                </button>
+                
+                <div id="test-results" style="margin: 20px; padding: 20px; border: 1px solid #ddd;">
+                    <p>Click the button to test direct navigation to CX-TAC BFT section.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script-toc.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('test-cx-tac-bft').addEventListener('click', () => {
+                setTimeout(() => {
+                    if (window.bcpTracker && window.bcpTracker.bcpData) {
+                        // Navigate directly to CX-TAC BFT
+                        window.bcpTracker.currentLine = 'cx-tac';
+                        window.bcpTracker.showSectionDetails('business_function_team_bft');
+                        
+                        // Get the rendered HTML
+                        const sectionBody = document.getElementById('section-body');
+                        if (sectionBody) {
+                            document.getElementById('test-results').innerHTML = sectionBody.innerHTML;
+                        } else {
+                            document.getElementById('test-results').innerHTML = '<p>Error: Could not find section-body element</p>';
+                        }
+                    } else {
+                        document.getElementById('test-results').innerHTML = '<p>Error: App not loaded</p>';
+                    }
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>

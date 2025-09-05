@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Test</title>
+    <style>
+        .hidden { display: none; }
+        .back-btn { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            margin: 10px; 
+            cursor: pointer; 
+        }
+        .business-line-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .section {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Button Test Page</h1>
+    
+    <!-- Test buttons -->
+    <div>
+        <h2>Test Buttons (should work)</h2>
+        <button onclick="alert('Test button works!')">Test Alert Button</button>
+        <button id="test-btn">Test Event Listener Button</button>
+    </div>
+
+    <!-- Simulate the actual structure -->
+    <div class="section" id="welcome">
+        <h2>Welcome Screen</h2>
+        <p>This is the welcome screen</p>
+        <button class="business-line-btn" data-line="ce">CE Global</button>
+    </div>
+
+    <div class="section hidden" id="bcp-content">
+        <h2>BCP Content (Table of Contents)</h2>
+        <p>This is the table of contents</p>
+        <button class="back-btn" id="back-btn">← Back to Dashboard</button>
+        <div data-section="test-section" style="cursor: pointer; padding: 10px; border: 1px solid #ddd; margin: 10px;">
+            Click me to go to section
+        </div>
+    </div>
+
+    <div class="section hidden" id="section-content">
+        <h2>Section Content</h2>
+        <p>This is a section</p>
+        <button class="back-btn" id="section-back-btn">← Back to Plan</button>
+    </div>
+
+    <script>
+        console.log('Script starting...');
+
+        // Test basic functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded');
+            
+            // Test button
+            const testBtn = document.getElementById('test-btn');
+            console.log('Test button found:', !!testBtn);
+            if (testBtn) {
+                testBtn.addEventListener('click', function() {
+                    alert('Event listener test works!');
+                });
+            }
+
+            // Check if our target elements exist
+            const backBtn = document.getElementById('back-btn');
+            const sectionBackBtn = document.getElementById('section-back-btn');
+            const ceBtn = document.querySelector('[data-line="ce"]');
+            const testSection = document.querySelector('[data-section="test-section"]');
+
+            console.log('back-btn exists:', !!backBtn);
+            console.log('section-back-btn exists:', !!sectionBackBtn);
+            console.log('CE button exists:', !!ceBtn);
+            console.log('test section exists:', !!testSection);
+
+            // Simple navigation functions
+            function showWelcome() {
+                console.log('Showing welcome');
+                document.getElementById('welcome').classList.remove('hidden');
+                document.getElementById('bcp-content').classList.add('hidden');
+                document.getElementById('section-content').classList.add('hidden');
+            }
+
+            function showBCP() {
+                console.log('Showing BCP');
+                document.getElementById('welcome').classList.add('hidden');
+                document.getElementById('bcp-content').classList.remove('hidden');
+                document.getElementById('section-content').classList.add('hidden');
+            }
+
+            function showSection() {
+                console.log('Showing section');
+                document.getElementById('welcome').classList.add('hidden');
+                document.getElementById('bcp-content').classList.add('hidden');
+                document.getElementById('section-content').classList.remove('hidden');
+            }
+
+            // Add event listeners
+            if (backBtn) {
+                console.log('Adding click listener to back button');
+                backBtn.addEventListener('click', function() {
+                    console.log('Back button clicked!');
+                    alert('Back to dashboard clicked!');
+                    showWelcome();
+                });
+            }
+
+            if (sectionBackBtn) {
+                console.log('Adding click listener to section back button');
+                sectionBackBtn.addEventListener('click', function() {
+                    console.log('Section back button clicked!');
+                    alert('Back to plan clicked!');
+                    showBCP();
+                });
+            }
+
+            if (ceBtn) {
+                console.log('Adding click listener to CE button');
+                ceBtn.addEventListener('click', function() {
+                    console.log('CE button clicked!');
+                    showBCP();
+                });
+            }
+
+            if (testSection) {
+                console.log('Adding click listener to test section');
+                testSection.addEventListener('click', function() {
+                    console.log('Test section clicked!');
+                    showSection();
+                });
+            }
+
+            console.log('All event listeners added');
+        });
+
+        console.log('Script loaded');
+    </script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCP Diagnostic Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .success { border-left-color: #28a745; }
+        .error { border-left-color: #dc3545; }
+        .warning { border-left-color: #ffc107; }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 BCP Data Tracker Diagnostic</h1>
+    
+    <div class="test-box">
+        <h3>File Availability Test</h3>
+        <div id="file-test">
+            <p class="loading">Testing file availability...</p>
+        </div>
+    </div>
+    
+    <div class="test-box">
+        <h3>JavaScript Loading Test</h3>
+        <div id="js-test">
+            <p class="loading">Testing JavaScript execution...</p>
+        </div>
+    </div>
+    
+    <div class="test-box">
+        <h3>Data Loading Test</h3>
+        <div id="data-test">
+            <p class="loading">Testing data loading...</p>
+        </div>
+    </div>
+    
+    <div class="test-box">
+        <h3>Quick Actions</h3>
+        <button class="button" onclick="openMainApp()">🚀 Open Main App</button>
+        <button class="button" onclick="testBFTVisual()">🧪 Test BFT Visual</button>
+        <button class="button" onclick="testNavigation()">🧭 Test Navigation</button>
+    </div>
+    
+    <div class="test-box">
+        <h3>Error Log</h3>
+        <div id="error-log">
+            <p>No errors detected yet...</p>
+        </div>
+    </div>
+
+    <script>
+        let errors = [];
+        
+        // Capture console errors
+        const originalError = console.error;
+        console.error = function(...args) {
+            errors.push(args.join(' '));
+            updateErrorLog();
+            originalError.apply(console, args);
+        };
+        
+        function updateErrorLog() {
+            const errorLog = document.getElementById('error-log');
+            if (errors.length === 0) {
+                errorLog.innerHTML = '<p style="color: green;">✅ No errors detected</p>';
+            } else {
+                errorLog.innerHTML = '<div style="color: red;">' + 
+                    errors.map(err => `❌ ${err}`).join('<br>') + 
+                    '</div>';
+            }
+        }
+        
+        async function testFileAvailability() {
+            const fileTest = document.getElementById('file-test');
+            const files = [
+                'index.html',
+                'script-toc.js', 
+                'styles.css',
+                'bcp-data-final.json'
+            ];
+            
+            let results = [];
+            
+            for (const file of files) {
+                try {
+                    const response = await fetch(file, { method: 'HEAD' });
+                    if (response.ok) {
+                        results.push(`✅ ${file} - Available`);
+                    } else {
+                        results.push(`❌ ${file} - Error ${response.status}`);
+                    }
+                } catch (error) {
+                    results.push(`❌ ${file} - ${error.message}`);
+                }
+            }
+            
+            fileTest.innerHTML = results.join('<br>');
+            fileTest.parentElement.className = 'test-box ' + 
+                (results.every(r => r.includes('✅')) ? 'success' : 'error');
+        }
+        
+        function testJavaScript() {
+            const jsTest = document.getElementById('js-test');
+            
+            try {
+                // Test if we can load the script
+                const script = document.createElement('script');
+                script.src = 'script-toc.js';
+                script.onload = function() {
+                    if (typeof BCPTrackerTOC !== 'undefined') {
+                        jsTest.innerHTML = '✅ JavaScript loaded successfully<br>✅ BCPTrackerTOC class available';
+                        jsTest.parentElement.className = 'test-box success';
+                    } else {
+                        jsTest.innerHTML = '❌ JavaScript loaded but BCPTrackerTOC class not found';
+                        jsTest.parentElement.className = 'test-box error';
+                    }
+                };
+                script.onerror = function() {
+                    jsTest.innerHTML = '❌ Failed to load script-toc.js';
+                    jsTest.parentElement.className = 'test-box error';
+                };
+                document.head.appendChild(script);
+            } catch (error) {
+                jsTest.innerHTML = `❌ JavaScript test failed: ${error.message}`;
+                jsTest.parentElement.className = 'test-box error';
+            }
+        }
+        
+        async function testDataLoading() {
+            const dataTest = document.getElementById('data-test');
+            
+            try {
+                const response = await fetch('bcp-data-final.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                if (data.bcpPlans) {
+                    const planCount = Object.keys(data.bcpPlans).length;
+                    dataTest.innerHTML = `✅ Data loaded successfully<br>✅ Found ${planCount} business plans`;
+                    dataTest.parentElement.className = 'test-box success';
+                } else {
+                    dataTest.innerHTML = '❌ Data loaded but no bcpPlans found';
+                    dataTest.parentElement.className = 'test-box error';
+                }
+            } catch (error) {
+                dataTest.innerHTML = `❌ Data loading failed: ${error.message}`;
+                dataTest.parentElement.className = 'test-box error';
+            }
+        }
+        
+        function openMainApp() {
+            window.open('index.html', '_blank');
+        }
+        
+        function testBFTVisual() {
+            window.open('test_bft_visual.html', '_blank');
+        }
+        
+        function testNavigation() {
+            window.open('test_bft_navigation.html', '_blank');
+        }
+        
+        // Run tests when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            testFileAvailability();
+            setTimeout(testJavaScript, 500);
+            setTimeout(testDataLoading, 1000);
+            setTimeout(updateErrorLog, 2000);
+        });
+    </script>
+</body>
+</html>

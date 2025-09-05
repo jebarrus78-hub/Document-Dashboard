@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BFT Test</title>
+</head>
+<body>
+    <div id="test-results"></div>
+    
+    <script src="script-toc.js"></script>
+    <script>
+        // Wait for the app to initialize
+        setTimeout(() => {
+            const testResults = document.getElementById('test-results');
+            
+            if (typeof window.bcpTracker !== 'undefined' && window.bcpTracker.bcpData) {
+                testResults.innerHTML += '<p>✅ App found</p>';
+                
+                const cxTacData = window.bcpTracker.bcpData['cx-tac'];
+                if (cxTacData) {
+                    testResults.innerHTML += '<p>✅ CX-TAC data found</p>';
+                    
+                    const bftSection = cxTacData.sections['business_function_team_bft'];
+                    if (bftSection) {
+                        testResults.innerHTML += '<p>✅ BFT section found: ' + bftSection.type + '</p>';
+                        testResults.innerHTML += '<p>Content items: ' + bftSection.content.length + '</p>';
+                        
+                        const contactsItems = bftSection.content.filter(item => item.type === 'contacts');
+                        testResults.innerHTML += '<p>Contacts items: ' + contactsItems.length + '</p>';
+                        
+                        if (contactsItems.length > 0) {
+                            const contactsItem = contactsItems[0];
+                            testResults.innerHTML += '<p>First contacts item has ' + contactsItem.content.length + ' contacts</p>';
+                            
+                            const teamMembers = contactsItem.content.filter(c => c.type === 'team_member');
+                            testResults.innerHTML += '<p>Team members: ' + teamMembers.length + '</p>';
+                            
+                            if (teamMembers.length > 0) {
+                                testResults.innerHTML += '<p>✅ First team member: ' + teamMembers[0].name + '</p>';
+                            }
+                            
+                            // Test the detection logic
+                            const hasBFTData = contactsItem.content.some(contact => 
+                                contact.type === 'team_member' && 
+                                (contact.phone?.length > 0 || contact.mobile?.length > 0)
+                            );
+                            testResults.innerHTML += '<p>BFT detection result: ' + hasBFTData + '</p>';
+                            
+                            if (hasBFTData) {
+                                // Test the rendering
+                                const renderedHTML = window.bcpTracker.formatContactsList(contactsItem);
+                                testResults.innerHTML += '<p>✅ Rendered HTML length: ' + renderedHTML.length + '</p>';
+                                testResults.innerHTML += '<p>Contains table: ' + renderedHTML.includes('<table') + '</p>';
+                                
+                                // Actually render the table
+                                testResults.innerHTML += '<h3>Rendered BFT Table:</h3>';
+                                testResults.innerHTML += renderedHTML;
+                            }
+                        }
+                    } else {
+                        testResults.innerHTML += '<p>❌ BFT section not found</p>';
+                    }
+                } else {
+                    testResults.innerHTML += '<p>❌ CX-TAC data not found</p>';
+                }
+            } else {
+                testResults.innerHTML += '<p>❌ App not found or no bcpData</p>';
+            }
+        }, 2000); // Wait 2 seconds for the app to load
+    </script>
+</body>
+</html>
